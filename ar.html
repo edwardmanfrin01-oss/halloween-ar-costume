@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101019">
+  <title>Summon my ghost</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; overflow: hidden; font: 16px/1.5 system-ui, sans-serif; color: white; background: #101019; }
+    body.running { background: transparent; }
+    .panel { position: fixed; z-index: 10; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; margin: auto; max-width: 440px; padding: 16px; border-radius: 16px; background: #101019e8; }
+    h1 { font-size: 24px; margin: 0 0 8px; color: #b4ff99; }
+    p { margin: 8px 0; }
+    button, a { font: inherit; }
+    button { cursor: pointer; padding: 10px 14px; border: 0; border-radius: 10px; background: #b4ff99; color: #101019; }
+    button:disabled { opacity: .6; cursor: wait; }
+    a { color: #b4ff99; }
+    .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    [hidden] { display: none !important; }
+    #status { font-size: 14px; }
+    body.running #intro { display: none; }
+    a-scene { position: fixed !important; inset: 0; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <section class="panel" aria-label="Ghost controls">
+    <h1>Summon my ghost 👻</h1>
+    <div id="intro">
+      <p>Point your camera at a Hiro marker. The ghost follows the marker as you move it.</p>
+      <p><a href="https://raw.githubusercontent.com/AR-js-org/AR.js/3.4.7/data/images/hiro.png" target="_blank" rel="noopener noreferrer">Open the marker to print ↗</a></p>
+      <p>Keep the entire black border visible, with a white margin around it.</p>
+    </div>
+    <p id="status" role="status" aria-live="polite">Camera access starts only when you tap the button.</p>
+    <div class="controls">
+      <button id="start" type="button">Start camera</button>
+      <button id="mode" type="button" hidden>Show test cube</button>
+      <a href="./">Back to BOO!</a>
+    </div>
+  </section>
+  <noscript>This experience needs JavaScript. You can still return to the BOO! page.</noscript>
+  <script src="ar.js"></script>
+</body>
+</html>
