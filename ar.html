@@ -29,16 +29,18 @@
     <div id="intro">
       <p>Choose a marker before starting the camera. The ghost follows it as you move it.</p>
       <p><label for="marker-choice">Tracking marker:</label>
-        <select id="marker-choice"><option value="hiro">Hiro (original)</option><option value="ghost">Ghost (custom)</option></select>
+        <select id="marker-choice"><option value="hiro">Hiro (original)</option><option value="ghost">Ghost (custom)</option><option value="matrix">Matrix (Hamming 5)</option></select>
       </p>
       <p><a id="marker-link" href="marker.html" target="_blank" rel="noopener noreferrer">Open the selected marker to print ↗</a></p>
       <p>Use this page's camera, not your phone's regular Camera app. Display the marker on another screen or print it.</p>
       <p>Keep the entire black border visible, with a white margin around it.</p>
     </div>
     <p id="status" role="status" aria-live="polite">Camera access starts only when you tap the button.</p>
+    <p id="metrics" style="font-size: 12px"></p>
     <div class="controls">
       <button id="start" type="button">Start camera</button>
       <button id="mode" type="button" hidden>Show test cube</button>
+      <a href="ar-test.html">Compare markers</a>
       <a href="./">Back to BOO!</a>
     </div>
   </section>

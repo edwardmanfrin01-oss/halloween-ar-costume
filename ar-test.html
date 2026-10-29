@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AR marker testing</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; background: #101019; color: #eeeeff; font: 16px/1.6 system-ui, sans-serif; }
+    main { max-width: 1000px; margin: auto; }
+    h1, h2 { color: #b4ff99; line-height: 1.2; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px; }
+    article { padding: 20px; border: 1px solid #454555; border-radius: 16px; background: #1b1b29; }
+    a { color: #b4ff99; } article a { display: block; margin-top: 14px; }
+    .start { padding: 10px; background: #b4ff99; color: #101019; border-radius: 8px; text-align: center; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>AR marker testing</h1>
+    <p>Display one marker on your computer. On your phone, start the matching camera test. The BOO! homepage stays unchanged.</p>
+    <section class="cards" aria-label="Choose a marker">
+      <article><h2>1. Hiro</h2><p>The original reference marker. Use this as your baseline.</p><a href="marker.html">Display / print Hiro</a><a class="start" href="ar.html?marker=hiro">Test Hiro on this phone</a></article>
+      <article><h2>2. Ghost</h2><p>The custom ghost silhouette. Compare recognition against Hiro.</p><a href="marker.html?marker=ghost">Display / print Ghost</a><a class="start" href="ar.html?marker=ghost">Test Ghost on this phone</a></article>
+      <article><h2>3. Matrix</h2><p>ARToolKit 3×3 Hamming, ID 5. A coded marker, not an ArUco dictionary.</p><a href="marker.html?marker=matrix">Display / print Matrix</a><a class="start" href="ar.html?marker=matrix">Test Matrix on this phone</a></article>
+    </section>
+    <h2>Keep the comparison fair</h2>
+    <ol>
+      <li>Keep the full black square and white margin visible. Adjust browser zoom so the black square has the same physical width for each marker.</li>
+      <li>Use the same lighting, phone, distance and angle. Start front-on, then slowly tilt.</li>
+      <li>Switch to <strong>Show test cube</strong> to inspect trembling without the ghost's floating animation.</li>
+      <li>Hold each marker in view for 20 seconds. Compare the <strong>Losses</strong> counter; it counts lost detections, not pose jitter.</li>
+      <li>Hide and reveal the marker to test recovery. These intentional losses count too.</li>
+    </ol>
+    <p>No smoothing has been added: all three tests use the same rendering settings. Counters reset when you leave or reload the test.</p>
+    <p><a href="./">Back to BOO!</a></p>
+  </main>
+</body>
+</html>

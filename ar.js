@@ -8,9 +8,11 @@ const markerChoice = document.querySelector('#marker-choice');
 const markerLink = document.querySelector('#marker-link');
 const markerOptions = {
   hiro: { name: 'Hiro', pattern: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/patt.hiro', page: 'marker.html' },
-  ghost: { name: 'Ghost', pattern: 'assets/ghost-marker.patt', page: 'marker.html?marker=ghost' }
+  ghost: { name: 'Ghost', pattern: 'assets/ghost-marker.patt', page: 'marker.html?marker=ghost' },
+  matrix: { name: 'Matrix Hamming 5', barcode: 5, page: 'marker.html?marker=matrix' }
 };
-if (new URLSearchParams(location.search).get('marker') === 'ghost') markerChoice.value = 'ghost';
+const requestedMarker = new URLSearchParams(location.search).get('marker');
+if (Object.hasOwn(markerOptions, requestedMarker)) markerChoice.value = requestedMarker;
 function updateMarkerLink() { markerLink.href = markerOptions[markerChoice.value].page; }
 markerChoice.addEventListener('change', updateMarkerLink);
 updateMarkerLink();
@@ -48,8 +50,10 @@ startButton.onclick = async () => {
   const selectedMarker = markerOptions[markerChoice.value];
   statusText.textContent = 'Loading AR… then allow camera access.';
   try {
-    const patternResponse = await fetch(selectedMarker.pattern);
-    if (!patternResponse.ok) throw new Error('Could not load the selected marker pattern. Check that all files have been published.');
+    if (selectedMarker.pattern) {
+      const patternResponse = await fetch(selectedMarker.pattern);
+      if (!patternResponse.ok) throw new Error('Could not load the selected marker pattern. Check that all files have been published.');
+    }
     // Pin both libraries so a new release cannot silently change the prototype.
     await loadScript('https://aframe.io/releases/1.6.0/aframe.min.js');
     await loadScript('https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js');
@@ -62,12 +66,16 @@ startButton.onclick = async () => {
     scene.setAttribute('vr-mode-ui', 'enabled: false');
     scene.setAttribute('device-orientation-permission-ui', 'enabled: false');
     scene.setAttribute('renderer', 'alpha: true; antialias: true');
-    scene.setAttribute('arjs', 'sourceType: webcam; debugUIEnabled: false; detectionMode: mono; cameraParametersUrl: https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/camera_para.dat;');
+    const detectionMode = selectedMarker.barcode !== undefined ? 'mono_and_matrix' : 'mono';
+    scene.setAttribute('arjs', `sourceType: webcam; debugUIEnabled: false; detectionMode: ${detectionMode}; matrixCodeType: 3x3_HAMMING63; cameraParametersUrl: https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/camera_para.dat;`);
+    const markerAttributes = selectedMarker.barcode !== undefined
+      ? `type="barcode" value="${selectedMarker.barcode}"`
+      : `type="pattern" url="${selectedMarker.pattern}"`;
     const animation = matchMedia('(prefers-reduced-motion: reduce)').matches ? '' :
       'animation="property: position; from: 0 0.12 0; to: 0 0.28 0; dur: 1500; dir: alternate; loop: true; easing: easeInOutSine"';
     // Hiro lies in XZ. Rotate the image to face out of the marker, including on a chest.
     scene.innerHTML = `
-      <a-marker type="pattern" url="${selectedMarker.pattern}" emitevents="true">
+      <a-marker ${markerAttributes} emitevents="true">
         <a-entity id="ghost" position="0 0.12 0" ${animation}>
           <a-plane src="assets/ghost.png" width="1.35" height="1.65" rotation="-90 0 0"
             material="shader: flat; transparent: true; alphaTest: 0.05; side: double;"></a-plane>
@@ -76,10 +84,21 @@ startButton.onclick = async () => {
       </a-marker>
       <a-entity camera look-controls="enabled: false" wasd-controls="enabled: false"></a-entity>`;
     const marker = scene.querySelector('a-marker');
+    let acquisitions = 0;
+    let losses = 0;
+    const metrics = document.querySelector('#metrics');
+    function updateMetrics() {
+      metrics.textContent = `${selectedMarker.name} · Acquisitions: ${acquisitions} · Losses: ${losses}`;
+    }
+    updateMetrics();
     marker.addEventListener('markerFound', () => {
+      acquisitions++;
+      updateMetrics();
       if (!cameraFailed) statusText.textContent = 'BOO! Marker found. Try tilting and rotating it.';
     });
     marker.addEventListener('markerLost', () => {
+      if (acquisitions > 0) losses++;
+      updateMetrics();
       if (!cameraFailed) statusText.textContent = `Marker lost. Bring the whole ${selectedMarker.name} marker back into view.`;
     });
     let showCube = false;

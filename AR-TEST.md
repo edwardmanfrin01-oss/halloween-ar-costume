@@ -1,4 +1,26 @@
-# Hiro and Ghost AR prototype
+# Hiro, Ghost and Matrix AR testing
+
+## Three-marker comparison
+
+Open `ar-test.html` for the comparison screen. It links to a display/print page
+and a matching camera test for each marker. Use the computer to display a marker
+and the phone to run the corresponding camera test.
+
+Matrix uses ARToolKit `3x3_HAMMING63`, ID 5, with `type="barcode"` and
+`detectionMode: mono_and_matrix`. It does not use a `.patt` file or an ArUco
+dictionary. Its image is stored locally at `assets/matrix-hamming-5.png`.
+Source: https://github.com/nicolocarpignoli/artoolkit-barcode-markers-collection/blob/master/3x3_hamming_6_3/5.png
+
+Publish `ar-test.html` and `assets/matrix-hamming-5.png` together with the updated
+`ar.html`, `ar.js`, and `marker.html`. Keep all existing Ghost assets.
+
+For a fair comparison, match the physical width of the black square using browser
+zoom, not the total image width: source images contain different white margins.
+Hold the phone at the same distance and angle in the same lighting for 20 seconds.
+The live counters show acquisitions and losses, not positional jitter. Intentional
+occlusions count as losses too. Counters reset on navigation or reload.
+Use the test cube to inspect jitter without the ghost's floating animation.
+No smoothing was added. Matrix recognition still requires real-phone validation.
 
 ## Custom Ghost marker
 
