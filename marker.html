@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hiro marker — print or display</title>
+  <style>
+    body { margin: 0; padding: 24px; background: white; color: #111; font: 16px/1.5 system-ui, sans-serif; text-align: center; }
+    img { display: block; box-sizing: border-box; width: min(75vw, 60vh, 600px); height: auto; margin: 24px auto; padding: 24px; background: white; }
+    @media print { .instructions { display: none; } img { width: 120mm; padding: 15mm; margin: 0 auto; } }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    <h1>Hiro tracking marker</h1>
+    <p>Print this page or leave it open on a separate screen.</p>
+    <p>On your phone, open <a href="ar.html">the AR page</a>, tap <strong>Start camera</strong>, and point at this marker.</p>
+    <p>The regular Camera app cannot display this AR experience.</p>
+    <p><a href="marker.html">Show Hiro</a> · <a href="marker.html?marker=ghost">Show Ghost</a></p>
+  </div>
+  <img src="https://raw.githubusercontent.com/AR-js-org/AR.js/3.4.7/data/images/hiro.png" alt="Hiro tracking marker with a black square border" width="512" height="512">
+  <script>
+    if (new URLSearchParams(location.search).get('marker') === 'ghost') {
+      document.title = 'Ghost marker — print or display';
+      document.querySelector('h1').textContent = 'Ghost tracking marker';
+      const markerImage = document.querySelector('img');
+      markerImage.src = 'assets/ghost-marker.png';
+      markerImage.alt = 'Custom ghost marker with a black square border and white margin';
+      document.querySelector('a[href="ar.html"]').href = 'ar.html?marker=ghost';
+    }
+  </script>
+</body>
+</html>

@@ -4,6 +4,16 @@ const statusText = document.querySelector('#status');
 const startButton = document.querySelector('#start');
 const modeButton = document.querySelector('#mode');
 let cameraFailed = false;
+const markerChoice = document.querySelector('#marker-choice');
+const markerLink = document.querySelector('#marker-link');
+const markerOptions = {
+  hiro: { name: 'Hiro', pattern: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/patt.hiro', page: 'marker.html' },
+  ghost: { name: 'Ghost', pattern: 'assets/ghost-marker.patt', page: 'marker.html?marker=ghost' }
+};
+if (new URLSearchParams(location.search).get('marker') === 'ghost') markerChoice.value = 'ghost';
+function updateMarkerLink() { markerLink.href = markerOptions[markerChoice.value].page; }
+markerChoice.addEventListener('change', updateMarkerLink);
+updateMarkerLink();
 
 function loadScript(src) {
   return new Promise((resolve, reject) => {
@@ -16,7 +26,7 @@ function loadScript(src) {
 }
 
 window.addEventListener('camera-init', () => {
-  if (!cameraFailed) statusText.textContent = 'Camera ready. Point at the entire Hiro marker.';
+  if (!cameraFailed) statusText.textContent = `Camera ready. Point at the entire ${markerOptions[markerChoice.value].name} marker. Reload to change markers.`;
 });
 window.addEventListener('camera-error', () => {
   cameraFailed = true;
@@ -34,8 +44,12 @@ startButton.onclick = async () => {
     return;
   }
   startButton.disabled = true;
+  markerChoice.disabled = true;
+  const selectedMarker = markerOptions[markerChoice.value];
   statusText.textContent = 'Loading AR… then allow camera access.';
   try {
+    const patternResponse = await fetch(selectedMarker.pattern);
+    if (!patternResponse.ok) throw new Error('Could not load the selected marker pattern. Check that all files have been published.');
     // Pin both libraries so a new release cannot silently change the prototype.
     await loadScript('https://aframe.io/releases/1.6.0/aframe.min.js');
     await loadScript('https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js');
@@ -53,7 +67,7 @@ startButton.onclick = async () => {
       'animation="property: position; from: 0 0.12 0; to: 0 0.28 0; dur: 1500; dir: alternate; loop: true; easing: easeInOutSine"';
     // Hiro lies in XZ. Rotate the image to face out of the marker, including on a chest.
     scene.innerHTML = `
-      <a-marker type="pattern" url="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/patt.hiro" emitevents="true">
+      <a-marker type="pattern" url="${selectedMarker.pattern}" emitevents="true">
         <a-entity id="ghost" position="0 0.12 0" ${animation}>
           <a-plane src="assets/ghost.png" width="1.35" height="1.65" rotation="-90 0 0"
             material="shader: flat; transparent: true; alphaTest: 0.05; side: double;"></a-plane>
@@ -66,7 +80,7 @@ startButton.onclick = async () => {
       if (!cameraFailed) statusText.textContent = 'BOO! Marker found. Try tilting and rotating it.';
     });
     marker.addEventListener('markerLost', () => {
-      if (!cameraFailed) statusText.textContent = 'Marker lost. Bring the whole Hiro marker back into view.';
+      if (!cameraFailed) statusText.textContent = `Marker lost. Bring the whole ${selectedMarker.name} marker back into view.`;
     });
     let showCube = false;
     modeButton.onclick = () => {

@@ -27,8 +27,12 @@
   <section class="panel" aria-label="Ghost controls">
     <h1>Summon my ghost 👻</h1>
     <div id="intro">
-      <p>Point your camera at a Hiro marker. The ghost follows the marker as you move it.</p>
-      <p><a href="https://raw.githubusercontent.com/AR-js-org/AR.js/3.4.7/data/images/hiro.png" target="_blank" rel="noopener noreferrer">Open the marker to print ↗</a></p>
+      <p>Choose a marker before starting the camera. The ghost follows it as you move it.</p>
+      <p><label for="marker-choice">Tracking marker:</label>
+        <select id="marker-choice"><option value="hiro">Hiro (original)</option><option value="ghost">Ghost (custom)</option></select>
+      </p>
+      <p><a id="marker-link" href="marker.html" target="_blank" rel="noopener noreferrer">Open the selected marker to print ↗</a></p>
+      <p>Use this page's camera, not your phone's regular Camera app. Display the marker on another screen or print it.</p>
       <p>Keep the entire black border visible, with a white margin around it.</p>
     </div>
     <p id="status" role="status" aria-live="polite">Camera access starts only when you tap the button.</p>
