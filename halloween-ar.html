@@ -33,14 +33,13 @@
     .camera-controls { display: none; }
     [hidden], #mode, #metrics { display: none !important; }
     body.running { background: transparent; padding: 0; overflow: hidden; }
-    body.running #intro { display: none; }
-    body.running main { position: fixed; z-index: 10; top: max(12px,env(safe-area-inset-top)); left: 12px; right: 12px; width: auto; max-width: 440px; margin: auto; padding: 14px; border-radius: 14px; background: #101019e8; }
-    body.running .camera-controls { display: block; }
+    body.running #intro, body.running .social, body.running .social-note { display: none; }
+    body.running main { position: fixed; z-index: 10; top: max(12px,env(safe-area-inset-top)); left: 12px; right: 12px; width: auto; max-width: 320px; margin: auto; padding: 8px 12px; border-radius: 10px; background: #101019e8; }
+    body.running .camera-controls { display: block; font-size: 12px; }
+    body.running #status { margin: 0 0 4px; font-size: 13px; line-height: 1.3; }
     a-scene { position: fixed !important; inset: 0; width: 100%; height: 100%; }
-    #jumpscare { position: fixed; inset: 0; z-index: 10000; background: black; }
-    #jumpscare-video { width: 100%; height: 100%; object-fit: contain; }
-    #jumpscare-close { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; width: auto; padding: 10px 16px; }
-    #jumpscare-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; }
+    #camera-loading { position: fixed; inset: 0; z-index: 10000; display: grid; place-content: center; padding: 28px; background: #101019; }
+    #camera-loading-text { max-width: 420px; margin: 20px auto; color: #b4ff99; font-size: clamp(24px, 6vw, 34px); font-weight: bold; line-height: 1.4; }
     @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
     @media (prefers-reduced-motion: reduce) { .ghost { animation: none; } }
   </style>
@@ -58,7 +57,7 @@
     <button id="start" type="button">Summon the Ghost 👻</button>
     <a class="social" href="https://www.instagram.com/edw_7/" target="_blank" rel="noopener noreferrer"><img class="social-icon" src="assets/images/instagram-logo.webp" width="24" height="24" alt="" aria-hidden="true"><span>Follow the ghost's human</span></a>
     <p class="social-note">(And send me some pictures or videos!)</p>
-    <div class="camera-controls"><a href="halloween-ar.html">Close camera</a> · <a href="./">Original BOO!</a></div>
+    <div class="camera-controls"><a href="halloween-ar.html">Close camera</a></div>
     <!-- Share the tested camera implementation while keeping test controls private. -->
     <select id="marker-choice" hidden aria-label="Tracking marker"><option value="matrix" selected>Matrix Hamming 5</option></select>
     <a id="marker-link" hidden href="marker.html?marker=matrix">Marker</a>
@@ -66,11 +65,11 @@
     <p id="metrics" hidden></p>
     <noscript><p>Camera mode requires JavaScript. The BOO! message and Instagram link still work.</p></noscript>
   </main>
-  <div id="jumpscare" role="dialog" aria-modal="true" aria-label="Jumpscare" hidden>
-    <video id="jumpscare-video" src="assets/images/Jumpscare.mp4" preload="auto" playsinline></video>
-    <button id="jumpscare-close" type="button">Close ✕</button>
-    <button id="jumpscare-play" type="button" hidden>Play video</button>
+  <div id="camera-loading" role="status" aria-live="polite" hidden>
+    <div class="ghost" aria-hidden="true">👻</div>
+    <p id="camera-loading-text"></p>
+    <a href="halloween-ar.html">Cancel</a>
   </div>
-  <script src="ar.js?v=20261030-jumpscare-1"></script>
+  <script src="ar.js?v=20261030-ghost-final-1"></script>
 </body>
 </html>

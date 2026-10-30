@@ -4,53 +4,20 @@
 const costume = {
   image: 'assets/AR_layers/ghost.png',
   markerSideCm: 19,
-  ghostHeightCm: 180,
-  jumpscareDelayMs: 2500
+  ghostHeightCm: 180
 };
 
 const statusText = document.querySelector('#status');
 const startButton = document.querySelector('#start');
 const modeButton = document.querySelector('#mode');
 let cameraFailed = false;
-const scareOverlay = document.querySelector('#jumpscare');
-const scareVideo = document.querySelector('#jumpscare-video');
-const scarePlay = document.querySelector('#jumpscare-play');
-let scareTimer;
-let scarePlayed = false;
-let scareClosed = false;
-function cancelScareTimer() { clearTimeout(scareTimer); scareTimer = undefined; }
-function closeScare() {
-  cancelScareTimer();
-  scareClosed = true;
-  if (!scareVideo) return;
-  scareVideo.pause();
-  scareOverlay.hidden = true;
-}
-async function playScare() {
-  if (scareClosed) return;
-  scarePlay.hidden = true;
-  try {
-    await scareVideo.play();
-  } catch {
-    if (scareClosed) return;
-    // Mobile browsers may only allow automatic playback without sound.
-    scareVideo.muted = true;
-    try { await scareVideo.play(); }
-    catch { if (!scareClosed) scarePlay.hidden = false; }
-  }
-  if (scareClosed) scareVideo.pause();
-}
-if (scareVideo) {
-  scareVideo.addEventListener('ended', closeScare);
-  scareVideo.addEventListener('error', () => {
-    closeScare();
-    statusText.textContent = 'The ghost lost its video. Reload to try again.';
-  });
-  document.querySelector('#jumpscare-close').onclick = closeScare;
-  scarePlay.onclick = () => { scareVideo.muted = false; void playScare(); };
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !scareOverlay.hidden) closeScare();
-  });
+const cameraLoading = document.querySelector('#camera-loading');
+const cameraLoadingText = document.querySelector('#camera-loading-text');
+let revealTimer;
+let cameraIntroStarted = false;
+function hideCameraLoading() {
+  clearTimeout(revealTimer);
+  if (cameraLoading) cameraLoading.hidden = true;
 }
 const markerChoice = document.querySelector('#marker-choice');
 const markerLink = document.querySelector('#marker-link');
@@ -79,11 +46,17 @@ function loadScript(src) {
 }
 
 window.addEventListener('camera-init', () => {
-  if (!cameraFailed) statusText.textContent = `Camera ready. Point at the entire ${markerOptions[markerChoice.value].name} marker. Reload to change markers.`;
+  if (cameraFailed) return;
+  statusText.textContent = 'Point at the marker to reveal the costume!';
+  if (cameraLoading && !cameraIntroStarted) {
+    cameraIntroStarted = true;
+    cameraLoadingText.textContent = 'Contacting the other side… their Wi-Fi sucks.';
+    revealTimer = setTimeout(hideCameraLoading, 4000);
+  }
 });
 window.addEventListener('camera-error', () => {
   cameraFailed = true;
-  closeScare();
+  hideCameraLoading();
   statusText.textContent = 'Camera unavailable. Allow camera access in your browser settings, close other camera apps, then reload. Use Safari or Chrome directly.';
   modeButton.hidden = true;
   startButton.hidden = false;
@@ -98,17 +71,9 @@ startButton.onclick = async () => {
     return;
   }
   startButton.disabled = true;
-  // Prime playback in the initial tap; never show or play the clip audibly here.
-  if (scareVideo) {
-    scareVideo.muted = true;
-    scareVideo.play().then(() => {
-      scareVideo.pause();
-      scareVideo.currentTime = 0;
-    }).catch(() => {});
-  }
   markerChoice.disabled = true;
   const selectedMarker = markerOptions[markerChoice.value];
-  statusText.textContent = 'Contacting the other side… their Wi-Fi sucks.';
+  statusText.textContent = 'Loading… allow camera access when prompted.';
   try {
     if (selectedMarker.pattern) {
       const patternResponse = await fetch(selectedMarker.pattern);
@@ -174,26 +139,12 @@ startButton.onclick = async () => {
     marker.addEventListener('markerFound', () => {
       acquisitions++;
       updateMetrics();
-      if (!cameraFailed) statusText.textContent = 'BOO! Marker found. Try tilting and rotating it.';
-      if (scareVideo && !cameraFailed && !scarePlayed && scareTimer === undefined) {
-        scareTimer = setTimeout(() => {
-          scareTimer = undefined;
-          if (cameraFailed || scarePlayed) return;
-          scarePlayed = true;
-          scareClosed = false;
-          scareVideo.currentTime = 0;
-          scareVideo.muted = false;
-          scareOverlay.hidden = false;
-          document.querySelector('#jumpscare-close').focus();
-          void playScare();
-        }, costume.jumpscareDelayMs);
-      }
+      if (!cameraFailed) statusText.textContent = 'BOO!';
     });
     marker.addEventListener('markerLost', () => {
-      cancelScareTimer();
       if (acquisitions > 0) losses++;
       updateMetrics();
-      if (!cameraFailed) statusText.textContent = `Marker lost. Bring the whole ${selectedMarker.name} marker back into view.`;
+      if (!cameraFailed) statusText.textContent = `Point at the marker to reveal the costume!`;
     });
     let showCube = false;
     modeButton.onclick = () => {
@@ -205,8 +156,13 @@ startButton.onclick = async () => {
     document.body.classList.add('running');
     startButton.hidden = true;
     modeButton.hidden = false;
+    if (cameraLoading) {
+      cameraLoadingText.textContent = 'Allow camera access to summon the ghost.';
+      cameraLoading.hidden = false;
+    }
     document.body.append(scene);
   } catch (error) {
+    hideCameraLoading();
     statusText.textContent = `${error.message} Reload the page to retry.`;
     startButton.disabled = false;
     startButton.textContent = 'Reload and retry';
@@ -215,7 +171,7 @@ startButton.onclick = async () => {
 };
 
 window.addEventListener('pagehide', () => {
-  closeScare();
+  hideCameraLoading();
   document.querySelectorAll('video').forEach(video => {
     video.srcObject?.getTracks().forEach(track => track.stop());
   });
