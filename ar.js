@@ -80,7 +80,7 @@ startButton.onclick = async () => {
     scene.innerHTML = `
       <a-marker ${markerAttributes} emitevents="true">
         <a-entity id="ghost" position="0 0.12 0" ${animation}>
-          <a-plane src="assets/AR_layers/ghost.png" width="1.35" height="1.65" rotation="-90 0 0"
+          <a-plane src="assets/AR_layers/ghost.png" width="81.8" height="100" rotation="-90 0 0"
             material="shader: flat; transparent: true; alphaTest: 0.05; side: double;"></a-plane>
         </a-entity>
         <a-box id="cube" position="0 0.5 0" material="color: #b4ff99; shader: flat; wireframe: true" visible="false"></a-box>
