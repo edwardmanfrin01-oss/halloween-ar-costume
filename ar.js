@@ -12,7 +12,10 @@ const markerOptions = {
   matrix: { name: 'Matrix Hamming 5', barcode: 5, page: 'marker.html?marker=matrix' }
 };
 const requestedMarker = new URLSearchParams(location.search).get('marker');
-if (Object.hasOwn(markerOptions, requestedMarker)) markerChoice.value = requestedMarker;
+if (Object.hasOwn(markerOptions, requestedMarker) &&
+    Array.from(markerChoice.options).some(option => option.value === requestedMarker)) {
+  markerChoice.value = requestedMarker;
+}
 function updateMarkerLink() { markerLink.href = markerOptions[markerChoice.value].page; }
 markerChoice.addEventListener('change', updateMarkerLink);
 updateMarkerLink();

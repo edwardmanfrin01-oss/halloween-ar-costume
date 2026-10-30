@@ -1,5 +1,26 @@
 # Hiro, Ghost and Matrix AR testing
 
+## Guest-facing AR home
+
+`halloween-ar.html` is a separate home page for guests. Its **Summon my ghost**
+button starts the existing AR camera implementation on the same page, fixed to
+Matrix Hamming ID 5. Camera permissions and AR libraries are requested only after
+the button is pressed. Test controls are hidden. **Close camera** returns to the
+new home; **Original BOO!** opens the unchanged original website.
+
+The new QR files are `assets/qrcode-ar.svg` (vector printing) and
+`assets/qrcode-ar.png`. Both encode:
+https://edwardmanfrin01-oss.github.io/halloween-ar-costume/halloween-ar.html
+
+Publish the new HTML and updated `ar.js` with the existing AR assets before using
+the QR. Scan the QR after deployment and test camera permission, Hamming tracking,
+closing the camera, and the original-page fallback on the phone. The QR and the
+Hamming tracking marker remain separate images with different purposes.
+
+To regenerate and verify the QR locally, install `qrcode` and `zxing-cpp` into
+`.tmp-qr-tools`, then run `python tools/build_ar_qr.py` (Pillow is also required).
+These Python dependencies are not required by the website.
+
 ## Three-marker comparison
 
 Open `ar-test.html` for the comparison screen. It links to a display/print page
