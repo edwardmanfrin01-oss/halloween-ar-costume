@@ -8,8 +8,8 @@ Matrix Hamming ID 5. Camera permissions and AR libraries are requested only afte
 the button is pressed. Test controls are hidden. **Close camera** returns to the
 new home; **Original BOO!** opens the unchanged original website.
 
-The new QR files are `assets/qrcode-ar.svg` (vector printing) and
-`assets/qrcode-ar.png`. Both encode:
+The new QR files are `assets/qrcodes/qrcode-ar.svg` (vector printing) and
+`assets/qrcodes/qrcode-ar.png`. Both encode:
 https://edwardmanfrin01-oss.github.io/halloween-ar-costume/halloween-ar.html
 
 Publish the new HTML and updated `ar.js` with the existing AR assets before using
@@ -29,10 +29,10 @@ and the phone to run the corresponding camera test.
 
 Matrix uses ARToolKit `3x3_HAMMING63`, ID 5, with `type="barcode"` and
 `detectionMode: mono_and_matrix`. It does not use a `.patt` file or an ArUco
-dictionary. Its image is stored locally at `assets/matrix-hamming-5.png`.
+dictionary. Its image is stored locally at `assets/markers/matrix-hamming-5.png`.
 Source: https://github.com/nicolocarpignoli/artoolkit-barcode-markers-collection/blob/master/3x3_hamming_6_3/5.png
 
-Publish `ar-test.html` and `assets/matrix-hamming-5.png` together with the updated
+Publish `ar-test.html` and `assets/markers/matrix-hamming-5.png` together with the updated
 `ar.html`, `ar.js`, and `marker.html`. Keep all existing Ghost assets.
 
 For a fair comparison, match the physical width of the black square using browser
@@ -57,8 +57,8 @@ are unchanged. To test the new marker after publishing:
 4. Reload the AR page and select **Hiro (original)** to compare tracking under
    the same lighting, distance and displayed marker size.
 
-Publish `ar.html`, `ar.js`, `marker.html`, `assets/ghost.png`,
-`assets/ghost-marker.png`, and `assets/ghost-marker.patt` together. The original
+Publish `ar.html`, `ar.js`, `marker.html`, `assets/AR_layers/ghost.png`,
+`assets/markers/ghost-marker.png`, and `assets/markers/ghost-marker.patt` together. The original
 source artwork and `tools/build_ghost_marker.py` are not needed at runtime.
 
 The generator uses Pillow to flatten the source artwork onto white, frame it,
@@ -72,7 +72,7 @@ Ghost marker still needs a real-phone tracking test; file validation alone does
 not confirm recognition quality.
 
 The existing `index.html` and QR code remain unchanged. The prototype uses
-`ar.html`, `ar.js`, and `assets/ghost.png`. No npm installation or build step is
+`ar.html`, `ar.js`, and `assets/AR_layers/ghost.png`. No npm installation or build step is
 required. External libraries require an Internet connection.
 
 ## Important: open the AR page first

@@ -37,7 +37,7 @@ def polygons(path):
 
 files=['qrcode-ar.svg','hiro_marker.png','ghost-marker.png','matrix-hamming-5-print.svg','qrcode.svg']
 for number,name in enumerate(files,1):
-    source=ROOT/'assets'/name
+    source=ROOT/'assets'/('qrcodes' if name.startswith('qrcode') else 'markers')/name
     center_y=155*mm
     if name.startswith('qrcode'):
         tree=ET.parse(source)

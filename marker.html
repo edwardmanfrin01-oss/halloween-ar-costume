@@ -23,7 +23,7 @@
     if (new URLSearchParams(location.search).get('marker') === 'matrix') {
       document.title = 'Matrix Hamming 5 — print or display';
       document.querySelector('h1').textContent = 'Matrix Hamming 5 tracking marker';
-      document.querySelector('img').src = 'assets/matrix-hamming-5.png';
+      document.querySelector('img').src = 'assets/markers/matrix-hamming-5.png';
       document.querySelector('img').alt = 'ARToolKit 3x3 Hamming marker, ID 5';
       document.querySelector('a[href="ar.html"]').href = 'ar.html?marker=matrix';
     }
@@ -31,7 +31,7 @@
       document.title = 'Ghost marker — print or display';
       document.querySelector('h1').textContent = 'Ghost tracking marker';
       const markerImage = document.querySelector('img');
-      markerImage.src = 'assets/ghost-marker.png';
+      markerImage.src = 'assets/markers/ghost-marker.png';
       markerImage.alt = 'Custom ghost marker with a black square border and white margin';
       document.querySelector('a[href="ar.html"]').href = 'ar.html?marker=ghost';
     }

@@ -9,7 +9,8 @@
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100dvh; padding: 24px; background: #101019; color: white; font: 16px/1.5 Arial, sans-serif; display: grid; place-items: center; text-align: center; }
     main { width: 100%; max-width: 440px; }
-    .ghost { font-size: 85px; animation: float 2.5s ease-in-out infinite; }
+    .ghost { position: relative; isolation: isolate; font-size: 85px; animation: float 2.5s ease-in-out infinite; }
+    .ghost::before { content: ""; position: absolute; z-index: -1; width: 180px; height: 180px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle, #b4ff991c 0%, transparent 70%); pointer-events: none; }
     h1 { font-size: clamp(65px,17vw,100px); color: #b4ff99; margin: 12px 0; }
     h2 { font-size: 25px; font-weight: 600; line-height: 1.4; }
     p { color: #bbbbc8; }
@@ -17,7 +18,9 @@
     button { display: block; width: 100%; padding: 16px 24px; border: 0; border-radius: 12px; background: #b4ff99; color: #101019; font-weight: bold; cursor: pointer; }
     button:disabled { opacity: .6; cursor: wait; }
     a { color: #b4ff99; }
-    .social { display: inline-block; margin: 16px 0; }
+    .social { display: inline-flex; align-items: center; gap: 8px; margin: 16px 0 0; }
+    .social-icon { width: 24px; height: 24px; object-fit: contain; flex-shrink: 0; }
+    .social-note { font-size: 13px; margin: 4px 0 16px; }
     .hint, #status { font-size: 14px; }
     #status:empty { display: none; }
     .camera-controls { display: none; }
@@ -35,15 +38,15 @@
   <main>
     <div id="intro">
       <div class="ghost" aria-hidden="true">👻</div>
-      <h1>BOO!</h1>
-      <h2>Sorry, my budget for this year was quite limited.</h2>
+      <h1></h1>
+      <h2>Sorry, my budget for this year was quite limited...</h2>
       <p>But hey, at least my costume has a website!</p>
-      <a class="social" href="https://www.instagram.com/edw_7/" target="_blank" rel="noopener noreferrer">Follow the ghost's human ↗</a>
-      <p class="hint">Want more BOO? Allow camera access, then point at the black-and-white square on my costume.</p>
-      <p class="hint"><a href="./">Enjoy the original costume without AR</a></p>
+      <p class="hint">To see my costume, tap the button below. Allow camera access, then point at the black-and-white square on my costume.</p>
     </div>
     <p id="status" role="status" aria-live="polite"></p>
-    <button id="start" type="button">Summon my ghost 👻</button>
+    <button id="start" type="button">Summon the Ghost 👻</button>
+    <a class="social" href="https://www.instagram.com/edw_7/" target="_blank" rel="noopener noreferrer"><img class="social-icon" src="assets/images/instagram-logo.webp" width="24" height="24" alt="" aria-hidden="true"><span>Follow the ghost's human</span></a>
+    <p class="social-note">(And send me some pictures or videos!)</p>
     <div class="camera-controls"><a href="halloween-ar.html">Close camera</a> · <a href="./">Original BOO!</a></div>
     <!-- Share the tested camera implementation while keeping test controls private. -->
     <select id="marker-choice" hidden aria-label="Tracking marker"><option value="matrix" selected>Matrix Hamming 5</option></select>

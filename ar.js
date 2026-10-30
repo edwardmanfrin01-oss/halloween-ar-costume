@@ -8,7 +8,7 @@ const markerChoice = document.querySelector('#marker-choice');
 const markerLink = document.querySelector('#marker-link');
 const markerOptions = {
   hiro: { name: 'Hiro', pattern: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/data/data/patt.hiro', page: 'marker.html' },
-  ghost: { name: 'Ghost', pattern: 'assets/ghost-marker.patt', page: 'marker.html?marker=ghost' },
+  ghost: { name: 'Ghost', pattern: 'assets/markers/ghost-marker.patt', page: 'marker.html?marker=ghost' },
   matrix: { name: 'Matrix Hamming 5', barcode: 5, page: 'marker.html?marker=matrix' }
 };
 const requestedMarker = new URLSearchParams(location.search).get('marker');
@@ -51,7 +51,7 @@ startButton.onclick = async () => {
   startButton.disabled = true;
   markerChoice.disabled = true;
   const selectedMarker = markerOptions[markerChoice.value];
-  statusText.textContent = 'Loading AR… then allow camera access.';
+  statusText.textContent = 'Contacting the other side… their Wi-Fi sucks.';
   try {
     if (selectedMarker.pattern) {
       const patternResponse = await fetch(selectedMarker.pattern);
@@ -61,7 +61,7 @@ startButton.onclick = async () => {
     await loadScript('https://aframe.io/releases/1.6.0/aframe.min.js');
     await loadScript('https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js');
     const ghostImage = new Image();
-    ghostImage.src = 'assets/ghost.png';
+    ghostImage.src = 'assets/AR_layers/ghost.png';
     await ghostImage.decode();
 
     const scene = document.createElement('a-scene');
@@ -80,7 +80,7 @@ startButton.onclick = async () => {
     scene.innerHTML = `
       <a-marker ${markerAttributes} emitevents="true">
         <a-entity id="ghost" position="0 0.12 0" ${animation}>
-          <a-plane src="assets/ghost.png" width="1.35" height="1.65" rotation="-90 0 0"
+          <a-plane src="assets/AR_layers/ghost.png" width="1.35" height="1.65" rotation="-90 0 0"
             material="shader: flat; transparent: true; alphaTest: 0.05; side: double;"></a-plane>
         </a-entity>
         <a-box id="cube" position="0 0.5 0" material="color: #b4ff99; shader: flat; wireframe: true" visible="false"></a-box>

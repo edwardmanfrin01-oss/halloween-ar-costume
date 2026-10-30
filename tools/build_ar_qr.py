@@ -13,9 +13,9 @@ URL = 'https://edwardmanfrin01-oss.github.io/halloween-ar-costume/halloween-ar.h
 qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=16, border=4)
 qr.add_data(URL)
 qr.make(fit=True)
-png = ROOT / 'assets/qrcode-ar.png'
+png = ROOT / 'assets/qrcodes/qrcode-ar.png'
 qr.make_image(fill_color='black', back_color='white').save(png)
-qr.make_image(image_factory=qrcode.image.svg.SvgPathFillImage).save(ROOT / 'assets/qrcode-ar.svg')
+qr.make_image(image_factory=qrcode.image.svg.SvgPathFillImage).save(ROOT / 'assets/qrcodes/qrcode-ar.svg')
 decoded = zxingcpp.read_barcode(Image.open(png))
 assert decoded and decoded.text == URL, 'QR decoding did not match the destination'
 print(f'QR verified: {decoded.text}')

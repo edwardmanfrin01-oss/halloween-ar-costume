@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSETS = ROOT / 'assets'
+ASSETS = ROOT / 'assets/markers'
 source = Image.open(ASSETS / 'ghost_icon_marker-removebg-preview.png').convert('RGBA')
 # Flatten transparency onto white before encoding, including the eye openings.
 source.thumbnail((352, 352), Image.Resampling.LANCZOS)
