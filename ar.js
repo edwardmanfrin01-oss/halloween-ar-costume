@@ -1,9 +1,57 @@
 'use strict';
 
+// Measurements in centimetres. Set markerSideCm to the printed BLACK square's side.
+const costume = {
+  image: 'assets/AR_layers/ghost.png',
+  markerSideCm: 19,
+  ghostHeightCm: 180,
+  jumpscareDelayMs: 2500
+};
+
 const statusText = document.querySelector('#status');
 const startButton = document.querySelector('#start');
 const modeButton = document.querySelector('#mode');
 let cameraFailed = false;
+const scareOverlay = document.querySelector('#jumpscare');
+const scareVideo = document.querySelector('#jumpscare-video');
+const scarePlay = document.querySelector('#jumpscare-play');
+let scareTimer;
+let scarePlayed = false;
+let scareClosed = false;
+function cancelScareTimer() { clearTimeout(scareTimer); scareTimer = undefined; }
+function closeScare() {
+  cancelScareTimer();
+  scareClosed = true;
+  if (!scareVideo) return;
+  scareVideo.pause();
+  scareOverlay.hidden = true;
+}
+async function playScare() {
+  if (scareClosed) return;
+  scarePlay.hidden = true;
+  try {
+    await scareVideo.play();
+  } catch {
+    if (scareClosed) return;
+    // Mobile browsers may only allow automatic playback without sound.
+    scareVideo.muted = true;
+    try { await scareVideo.play(); }
+    catch { if (!scareClosed) scarePlay.hidden = false; }
+  }
+  if (scareClosed) scareVideo.pause();
+}
+if (scareVideo) {
+  scareVideo.addEventListener('ended', closeScare);
+  scareVideo.addEventListener('error', () => {
+    closeScare();
+    statusText.textContent = 'The ghost lost its video. Reload to try again.';
+  });
+  document.querySelector('#jumpscare-close').onclick = closeScare;
+  scarePlay.onclick = () => { scareVideo.muted = false; void playScare(); };
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !scareOverlay.hidden) closeScare();
+  });
+}
 const markerChoice = document.querySelector('#marker-choice');
 const markerLink = document.querySelector('#marker-link');
 const markerOptions = {
@@ -35,6 +83,7 @@ window.addEventListener('camera-init', () => {
 });
 window.addEventListener('camera-error', () => {
   cameraFailed = true;
+  closeScare();
   statusText.textContent = 'Camera unavailable. Allow camera access in your browser settings, close other camera apps, then reload. Use Safari or Chrome directly.';
   modeButton.hidden = true;
   startButton.hidden = false;
@@ -49,6 +98,14 @@ startButton.onclick = async () => {
     return;
   }
   startButton.disabled = true;
+  // Prime playback in the initial tap; never show or play the clip audibly here.
+  if (scareVideo) {
+    scareVideo.muted = true;
+    scareVideo.play().then(() => {
+      scareVideo.pause();
+      scareVideo.currentTime = 0;
+    }).catch(() => {});
+  }
   markerChoice.disabled = true;
   const selectedMarker = markerOptions[markerChoice.value];
   statusText.textContent = 'Contacting the other side… their Wi-Fi sucks.';
@@ -61,8 +118,28 @@ startButton.onclick = async () => {
     await loadScript('https://aframe.io/releases/1.6.0/aframe.min.js');
     await loadScript('https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js');
     const ghostImage = new Image();
-    ghostImage.src = 'assets/AR_layers/ghost.png';
+    ghostImage.src = costume.image;
     await ghostImage.decode();
+    // Measure transparent padding so ghostHeightCm describes the visible figure.
+    const canvas = document.createElement('canvas');
+    canvas.width = ghostImage.naturalWidth;
+    canvas.height = ghostImage.naturalHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(ghostImage, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let firstRow = canvas.height, lastRow = -1;
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        if (pixels[(y * canvas.width + x) * 4 + 3] > 12) {
+          firstRow = Math.min(firstRow, y);
+          lastRow = y;
+          break;
+        }
+      }
+    }
+    const visibleHeight = lastRow >= firstRow ? lastRow - firstRow + 1 : canvas.height;
+    const planeHeight = costume.ghostHeightCm / costume.markerSideCm * canvas.height / visibleHeight;
+    const planeWidth = planeHeight * canvas.width / canvas.height;
 
     const scene = document.createElement('a-scene');
     scene.setAttribute('embedded', '');
@@ -80,7 +157,7 @@ startButton.onclick = async () => {
     scene.innerHTML = `
       <a-marker ${markerAttributes} emitevents="true">
         <a-entity id="ghost" position="0 0.12 0" ${animation}>
-          <a-plane src="assets/AR_layers/ghost.png" width="81.8" height="100" rotation="-90 0 0"
+          <a-plane src="${costume.image}" width="${planeWidth}" height="${planeHeight}" rotation="-90 0 0"
             material="shader: flat; transparent: true; alphaTest: 0.05; side: double;"></a-plane>
         </a-entity>
         <a-box id="cube" position="0 0.5 0" material="color: #b4ff99; shader: flat; wireframe: true" visible="false"></a-box>
@@ -98,8 +175,22 @@ startButton.onclick = async () => {
       acquisitions++;
       updateMetrics();
       if (!cameraFailed) statusText.textContent = 'BOO! Marker found. Try tilting and rotating it.';
+      if (scareVideo && !cameraFailed && !scarePlayed && scareTimer === undefined) {
+        scareTimer = setTimeout(() => {
+          scareTimer = undefined;
+          if (cameraFailed || scarePlayed) return;
+          scarePlayed = true;
+          scareClosed = false;
+          scareVideo.currentTime = 0;
+          scareVideo.muted = false;
+          scareOverlay.hidden = false;
+          document.querySelector('#jumpscare-close').focus();
+          void playScare();
+        }, costume.jumpscareDelayMs);
+      }
     });
     marker.addEventListener('markerLost', () => {
+      cancelScareTimer();
       if (acquisitions > 0) losses++;
       updateMetrics();
       if (!cameraFailed) statusText.textContent = `Marker lost. Bring the whole ${selectedMarker.name} marker back into view.`;
@@ -124,6 +215,7 @@ startButton.onclick = async () => {
 };
 
 window.addEventListener('pagehide', () => {
+  closeScare();
   document.querySelectorAll('video').forEach(video => {
     video.srcObject?.getTracks().forEach(track => track.stop());
   });

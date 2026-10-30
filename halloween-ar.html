@@ -37,6 +37,10 @@
     body.running main { position: fixed; z-index: 10; top: max(12px,env(safe-area-inset-top)); left: 12px; right: 12px; width: auto; max-width: 440px; margin: auto; padding: 14px; border-radius: 14px; background: #101019e8; }
     body.running .camera-controls { display: block; }
     a-scene { position: fixed !important; inset: 0; width: 100%; height: 100%; }
+    #jumpscare { position: fixed; inset: 0; z-index: 10000; background: black; }
+    #jumpscare-video { width: 100%; height: 100%; object-fit: contain; }
+    #jumpscare-close { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; width: auto; padding: 10px 16px; }
+    #jumpscare-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: auto; }
     @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
     @media (prefers-reduced-motion: reduce) { .ghost { animation: none; } }
   </style>
@@ -62,6 +66,11 @@
     <p id="metrics" hidden></p>
     <noscript><p>Camera mode requires JavaScript. The BOO! message and Instagram link still work.</p></noscript>
   </main>
-  <script src="ar.js"></script>
+  <div id="jumpscare" role="dialog" aria-modal="true" aria-label="Jumpscare" hidden>
+    <video id="jumpscare-video" src="assets/images/Jumpscare.mp4" preload="auto" playsinline></video>
+    <button id="jumpscare-close" type="button">Close ✕</button>
+    <button id="jumpscare-play" type="button" hidden>Play video</button>
+  </div>
+  <script src="ar.js?v=20261030-jumpscare-1"></script>
 </body>
 </html>
