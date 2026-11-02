@@ -1,4 +1,4 @@
-# Halloween AR Costume 👻🍪
+# Halloween AR Costume
 
 A low-budget Halloween costume with its own website — and a little afterlife.
 
@@ -25,6 +25,7 @@ The cookie is drawn inline in SVG: no separate icon or image download is needed.
 | File | Purpose |
 | --- | --- |
 | [`halloween-ar.html`](halloween-ar.html) | Current QR landing page: the cookie experience |
+| [`halloween-ar_original.html`](halloween-ar_original.html) |  The original halloween costume's webpage |
 | [`index.html`](index.html) | Original low-budget Halloween / BOO! page, still served at the site root |
 | [`ar.html`](ar.html) | AR camera experience with Hiro, custom Ghost, and Matrix marker choices |
 | [`ar-test.html`](ar-test.html) | Entry point for comparing tracking markers |
@@ -33,6 +34,7 @@ The cookie is drawn inline in SVG: no separate icon or image download is needed.
 | [`AR-TEST.md`](AR-TEST.md) | Detailed AR setup, testing notes, and troubleshooting |
 | `assets/` | Ghost artwork, tracking markers, QR codes, and other media |
 | `tools/` | Optional Python scripts for generating QR codes, markers, and print sheets |
+
 
 ## Run locally
 
@@ -46,7 +48,7 @@ Open [the cookie page](http://localhost:8000/halloween-ar.html), [the original h
 
 The cookie page can also be opened directly as a local HTML file.
 
-## Try the original AR experience
+## Try the original AR experience (now available at [`halloween-ar.html](https://edwardmanfrin01-oss.github.io/halloween-ar-costume`](halloween-ar.html)
 
 1. Open `marker.html?marker=matrix` on another screen, or print that marker with its full black border and white margin.
 2. Open `ar.html?marker=matrix` on your phone using the HTTPS-hosted site.
@@ -69,9 +71,7 @@ The existing `qrcode-ar.png` and `qrcode-ar.svg`, and their generator, target:
 https://edwardmanfrin01-oss.github.io/halloween-ar-costume/halloween-ar.html
 ```
 
-That configured path differs from this repository's name, `HALLOWEEN_AR_COSTUME`. Before publishing, confirm the actual Pages address and test the existing QR destination. Keeping the destination available matters for codes already printed or shared on Instagram; generating a new QR does not update existing copies.
-
-The site root still opens `index.html`. The cookie experience lives specifically at `halloween-ar.html`.
+The cookie experience lives specifically at `halloween-ar.html`.
 
 After deployment, scan the shared QR on a phone, eat all three bites, try **One more?**, and check the Instagram link. If retaining the AR demo, also test camera permissions and tracking on a real phone.
 
