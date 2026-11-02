@@ -1,25 +1,24 @@
 # Hiro, Ghost and Matrix AR testing
 
-## Guest-facing AR home
+## Current visitor page and original AR experience
 
-`halloween-ar.html` is a separate home page for guests. Its **Summon my ghost**
-button starts the existing AR camera implementation on the same page, fixed to
-Matrix Hamming ID 5. Camera permissions and AR libraries are requested only after
-the button is pressed. Test controls are hidden. **Close camera** returns to the
-new home; **Original BOO!** opens the unchanged original website.
+After Halloween 2026, `halloween-ar.html` became an interactive cookie page.
+It no longer loads `ar.js` or requests camera access. See [README.md](README.md)
+for the current project overview and publishing notes.
 
-The new QR files are `assets/qrcodes/qrcode-ar.svg` (vector printing) and
-`assets/qrcodes/qrcode-ar.png`. Both encode:
-https://edwardmanfrin01-oss.github.io/halloween-ar-costume/halloween-ar.html
+The original AR experience remains available at `ar.html`. To reproduce the
+costume's Matrix Hamming ID 5 setup, open `ar.html?marker=matrix`, tap
+**Start camera**, and point at the matching printed marker.
 
-Publish the new HTML and updated `ar.js` with the existing AR assets before using
-the QR. Scan the QR after deployment and test camera permission, Hamming tracking,
-closing the camera, and the original-page fallback on the phone. The QR and the
-Hamming tracking marker remain separate images with different purposes.
+The QR files `assets/qrcodes/qrcode-ar.svg` and `assets/qrcodes/qrcode-ar.png`
+still target `halloween-ar.html`, so they now lead to the cookie page when the
+updated site is deployed. The QR and tracking marker are separate images with
+different purposes. Check the destination against the actual hosting address
+before publishing; see the README for the configured URL.
 
-To regenerate and verify the QR locally, install `qrcode` and `zxing-cpp` into
-`.tmp-qr-tools`, then run `python tools/build_ar_qr.py` (Pillow is also required).
-These Python dependencies are not required by the website.
+To regenerate and verify the QR locally, install `qrcode`, `Pillow`, and
+`zxing-cpp`, then run `python tools/build_ar_qr.py`. These dependencies are not
+required by the website. The script also supports packages in `.tmp-qr-tools`.
 
 ## Three-marker comparison
 
