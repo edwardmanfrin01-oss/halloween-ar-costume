@@ -48,7 +48,7 @@ Open [the cookie page](http://localhost:8000/halloween-ar.html), [the original h
 
 The cookie page can also be opened directly as a local HTML file.
 
-## Try the original AR experience (now available at [`halloween-ar.html](https://edwardmanfrin01-oss.github.io/halloween-ar-costume`](halloween-ar.html)
+## Try the original AR experience (now available [`https://edwardmanfrin01-oss.github.io/halloween-ar-costume`](here)!
 
 1. Open `marker.html?marker=matrix` on another screen, or print that marker with its full black border and white margin.
 2. Open `ar.html?marker=matrix` on your phone using the HTTPS-hosted site.
